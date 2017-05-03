@@ -434,7 +434,7 @@ Resources:
                   if ! php wp-cli.phar core is-installed --allow-root; then
                     php wp-cli.phar core download --allow-root --version=${BlogVersion}
                     php wp-cli.phar core config --dbname='wordpress' --dbuser='wordpress' --dbpass='wordpress' --dbhost='${Database.Endpoint.Address}' --allow-root
-                    php wp-cli.phar core install --url='https://${LoadBalancer.CanonicalHostedZoneName}' --title='${BlogTitle}' --admin_user='${BlogAdminUsername}' --admin_password='${BlogAdminPassword}' --admin_email='${BlogAdminEMail}' --skip-email --allow-root
+                    php wp-cli.phar core install --url='http://${LoadBalancer.CanonicalHostedZoneName}' --title='${BlogTitle}' --admin_user='${BlogAdminUsername}' --admin_password='${BlogAdminPassword}' --admin_email='${BlogAdminEMail}' --skip-email --allow-root
                     #sed -i "/$table_prefix = 'wp_';/a\$_SERVER['HTTPS'] = 'on';" /var/www/html/wp-config.php
                   fi
                   chown -R apache:apache /var/www/html
@@ -662,6 +662,9 @@ Resources:
         ToPort: 2049
         SourceSecurityGroupId: !Ref WebServerSecurityGroup
 Outputs:
-  TemplateID:
-    Description: 'cloudonaut.io template id'
-    Value: 'wordpress/wordpress-ha'
+  LBUrl:
+    Description: 'load balancer URL'
+    Value: !Sub ${LoadBalancer.CanonicalHostedZoneName}
+  LoadBalancer:
+    Description: 'load balancer'
+    Value: !Ref LoadBalancer
